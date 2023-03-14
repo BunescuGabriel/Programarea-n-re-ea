@@ -96,9 +96,21 @@ namespace lab_1
                     sendThread.Start();
 
                 }
+                catch (SocketException se)
+                {
+                    if (se.SocketErrorCode == SocketError.ConnectionReset)
+                    {
+                        Console.WriteLine($"Client {client.RemoteEndPoint} disconnected.");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Error receiving from {client.RemoteEndPoint}: {se.Message}");
+                    }
+                    break;
+                }
                 catch (Exception e)
                 {
-                    Console.WriteLine($"Error receiving: {e.Message}");
+                    Console.WriteLine($"Error receiving from {client.RemoteEndPoint}: {e.Message}");
                     break;
                 }
             }
@@ -106,7 +118,9 @@ namespace lab_1
             lock (_clientsLock)
             {
                 _clients.Remove(client);
+                client.Close();
             }
         }
+
     }
 }
