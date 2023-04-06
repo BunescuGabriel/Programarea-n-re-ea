@@ -25,7 +25,7 @@ namespace client
             {
                 _clientSocket.Connect(endPoint);
 
-                // Start a new thread to receive messages from the server
+                // Începeți un fir nou pentru a primi mesaje de la server
                 Task.Run(() => ReceiveMessages());
             }
             catch (Exception e)
@@ -46,7 +46,7 @@ namespace client
                     Console.Write("Enter message: ");
                     string text = Console.ReadLine() ?? "";
 
-                    // Construct the message to send to the server
+                    // Construiți mesajul de trimis către server
                     string message = $"{username}: {text}";
 
                     byte[] buffer = Encoding.UTF8.GetBytes(message);
@@ -68,7 +68,7 @@ namespace client
                     byte[] buffer = new byte[1024];
                     int receivedBytes = _clientSocket.Receive(buffer);
 
-                    // Print a blank line before the received message
+                    // Imprimă o linie goală înainte de mesajul primit
                     Console.WriteLine();
 
                     string response = Encoding.UTF8.GetString(buffer, 0, receivedBytes);
