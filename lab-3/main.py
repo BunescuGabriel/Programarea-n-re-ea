@@ -4,7 +4,7 @@ import dns.reversename
 from ipwhois import IPWhois
 
 flag=0
-print(f'Welcome to DNS application! \nfor begining here are disponible commands:\n'
+print(f'Bun venit la aplicația DNS! \npentru început, aici sunt disponibile comenzi:\n'
       f'* /commands - arată lista de comenzi\n'
       f'* /resolve_domain / resolve_ip> - arată o listă de adrese IP atribuite domeniului sau o listă de domenii atribuite adresei IP\n'
       f'* /use_dns<ip> comutați serverul DNS pentru a răsfoi comenzile precedente')
@@ -12,7 +12,7 @@ resolver = dns.resolver.Resolver(configure=False)
 while True:
 
     try:
-        message=input('type the command:\n')
+        message=input('tastați comanda:\n')
 
         if '/commands' in message:
             print(f'* /resolve<domain/ip> - afișează o listă de adrese IP atribuite domeniului sau o listă de domenii atribuite adresei IP\n'
@@ -29,38 +29,35 @@ while True:
                     for rdata in result:
                         print(f'{domain} has IP address {rdata.address}.')
                 except dns.resolver.NoNameservers:
-                        print(f"DNS server not found or unreachable")
+                        print(f"Serverul DNS nu a fost găsit sau inaccesibil")
                 except :
-                    print(f"No DNS record found for this  domain")
+                    print(f"Nu a fost găsită nicio înregistrare DNS pentru acest domeniu")
         elif '/resolve_ip' in message:
-            ip_addr = input("type the ip adress:\n")
+            ip_addr = input("tastați adresa ip:\n")
             if flag==0:
                 hostname = socket.gethostbyaddr(ip_addr)[0]
-                print(f'the domain name is:{hostname}')
+                print(f'numele de domeniu este:{hostname}')
             elif flag==1:
                 try:
                     domain_name = dns.reversename.from_address(ip_addr)
                     result = resolver.resolve(domain_name, 'PTR')
-                    # Extract the hostname from the result
+                    # Extrageți numele de gazdă din rezultat
                     hostname = result[0].to_text().rstrip('.')
-                    # Print the hostname returned by the DNS server
+                    # Tipăriți numele de gazdă returnat de serverul DNS
                     print(hostname)
                 except dns.resolver.NoNameservers:
-                    print(f"DNS server not found or unreachable")
+                    print(f"Serverul DNS nu a fost găsit sau inaccesibil")
                 except dns.resolver.NXDOMAIN:
-                    print(f"No DNS record found for IP address {ip_addr}")
+                    print(f"Nu a fost găsită nicio înregistrare DNS pentru adresa IP {ip_addr}")
         elif '/use_dns' in message and flag==0:
             flag=1
-            dns_addr=input("type the dns adress")
+            dns_addr=input("introduceți adresa dns")
             resolver.nameservers = [dns_addr]
-            print(f'switched to {dns_addr} dns')
+            print(f'trecut la {dns_addr} dns')
         elif '/use_dns' in message and flag == 1:
-            dns_addr = input("type the dns adress")
+            dns_addr = input("introduceți adresa dns")
             if 'default' in dns_addr:
                 flag=0
-                print(f'switched to default dns')
-        #ip_adress = socket.gethostbyname(domain_name)
-
-        #print(f'the ip of {domain_name} is {ip_adress}')
+                print(f'a trecut la dns implicit')
     except:
       print('error')
